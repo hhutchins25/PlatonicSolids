@@ -1,3 +1,8 @@
+// GLActivity.java
+// Primarily based off Android example
+// https://developer.android.com/training/graphics/opengl/
+// Built upon by Holden Hutchins, 2019
+
 package com.example.platonicsolids;
 
 import android.content.Context;

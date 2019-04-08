@@ -1,3 +1,8 @@
+// Triangle.java
+// Primarily based off Android example
+// https://developer.android.com/training/graphics/opengl/shapes.html
+// Built upon by Holden Hutchins, 2019
+
 package com.example.platonicsolids.geo;
 
 import android.opengl.GLES20;

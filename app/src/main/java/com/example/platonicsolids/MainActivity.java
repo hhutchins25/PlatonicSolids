@@ -1,3 +1,8 @@
+// MainActivity.java
+// Houses the starting activity, will provide
+// an initial UI possibly for initiating renderer
+// Holden Hutchins, 2019
+
 package com.example.platonicsolids;
 
 import android.content.Intent;
