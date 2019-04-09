@@ -36,6 +36,7 @@ public class GLActivity extends AppCompatActivity {
         private Tetrahedron mTetrahedron;
 
         public volatile float mAngle;
+        public float mSkew[] = {0.0f, 1.0f, 0.0f};
 
         public float getAngle() {
             return mAngle;
@@ -43,6 +44,12 @@ public class GLActivity extends AppCompatActivity {
 
         public void setAngle(float angle) {
             mAngle = angle;
+        }
+
+        public void setSkew(float skew[]) {
+            mSkew[0] = (mSkew[0] + skew[0]) / 2;
+            mSkew[1] = (mSkew[1] + skew[1]) / 2;
+            mSkew[2] = (mSkew[2] + skew[2]) / 2;
         }
 
         public void onSurfaceCreated(GL10 unused, EGLConfig config) {
@@ -69,7 +76,7 @@ public class GLActivity extends AppCompatActivity {
             float[] scratch = new float[16];
 
             // Create a rotation for the triangle
-            Matrix.setRotateM(rotationMatrix, 0, mAngle, 1, 0, 0);
+            Matrix.setRotateM(rotationMatrix, 0, mAngle, mSkew[0], mSkew[1], mSkew[2]);
 
             // Combine the rotation matrix with the projection and camera view
             // Note that the vPMatrix factor *must be first* in order
@@ -138,6 +145,7 @@ public class GLActivity extends AppCompatActivity {
                     renderer.setAngle(
                             renderer.getAngle() +
                                     ((dx + dy) * TOUCH_SCALE_FACTOR));
+                    renderer.setSkew(new float[] {dy / (dx + dy), dx / (dx + dy), 0.0f});
                     requestRender();
             }
 

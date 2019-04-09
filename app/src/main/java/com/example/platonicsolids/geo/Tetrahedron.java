@@ -1,3 +1,8 @@
+// Tetrahedron.java
+// Creates the vertices required for a Tetrahedron and
+// draws the corresponding triangles
+// Holden Hutchins, 2019
+
 package com.example.platonicsolids.geo;
 
 public class Tetrahedron {
