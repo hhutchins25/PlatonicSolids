@@ -13,7 +13,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MotionEvent;
 
-import com.example.platonicsolids.geo.Triangle;
+import com.example.platonicsolids.geo.Cube;
 import com.example.platonicsolids.geo.Tetrahedron;
 
 import javax.microedition.khronos.egl.EGLConfig;
