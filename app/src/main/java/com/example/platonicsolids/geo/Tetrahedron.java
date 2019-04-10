@@ -7,10 +7,10 @@ package com.example.platonicsolids.geo;
 
 public class Tetrahedron {
 
-    private float vert1[] = new float[] { 0.0f, 0.5f, 0.0f };
-    private float vert2[] = new float[] { 0.0f, -0.25f, 0.433013f };
-    private float vert3[] = new float[] { -0.375f, -0.25f, -0.216506f };
-    private float vert4[] = new float[] { 0.375f, -0.25f, -0.216506f };
+    private float vert1[] = new float[] { 1, 1, 1 };
+    private float vert2[] = new float[] { 1, -1, -1 };
+    private float vert3[] = new float[] { -1, 1, -1 };
+    private float vert4[] = new float[] { -1, -1, 1 };
 
     Triangle tri1 = new Triangle(vert1, vert3, vert2);
     Triangle tri2 = new Triangle(vert1, vert4, vert3);

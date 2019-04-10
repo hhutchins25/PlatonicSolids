@@ -35,21 +35,19 @@ public class GLActivity extends AppCompatActivity {
         private float[] rotationMatrix = new float[16];
         private Tetrahedron mTetrahedron;
 
-        public volatile float mAngle;
-        public float mSkew[] = {0.0f, 1.0f, 0.0f};
+        public volatile float mAngleX; public volatile float mAngleY;
 
-        public float getAngle() {
-            return mAngle;
+        public float getAngleX() {
+            return mAngleX;
         }
-
-        public void setAngle(float angle) {
-            mAngle = angle;
+        public void setAngleX(float angle) {
+            mAngleX = angle;
         }
-
-        public void setSkew(float skew[]) {
-            mSkew[0] = (mSkew[0] + skew[0]) / 2;
-            mSkew[1] = (mSkew[1] + skew[1]) / 2;
-            mSkew[2] = (mSkew[2] + skew[2]) / 2;
+        public float getAngleY() {
+            return mAngleY;
+        }
+        public void setAngleY(float angle) {
+            mAngleY = angle;
         }
 
         public void onSurfaceCreated(GL10 unused, EGLConfig config) {
@@ -68,15 +66,19 @@ public class GLActivity extends AppCompatActivity {
             GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
 
             // Set the camera position (View matrix)
-            Matrix.setLookAtM(viewMatrix, 0, 0, 0, -3, 0f, 0f, 0f, 0f, 1.0f, 0.0f);
+            Matrix.setLookAtM(viewMatrix, 0, 0, 0, -10, 0f, 0f, 0f, 0f, 1.0f, 0.0f);
 
             // Calculate the projection and view transformation
             Matrix.multiplyMM(vPMatrix, 0, projectionMatrix, 0, viewMatrix, 0);
 
             float[] scratch = new float[16];
+            float[] xRot = new float[16];
+            float[] yRot = new float[16];
 
             // Create a rotation for the triangle
-            Matrix.setRotateM(rotationMatrix, 0, mAngle, mSkew[0], mSkew[1], mSkew[2]);
+            Matrix.setRotateM(rotationMatrix, 0, mAngleY, 1, 0, 0);
+            Matrix.setRotateM(xRot, 0, mAngleX, 0, 1, 0);
+            Matrix.multiplyMM(rotationMatrix, 0, xRot, 0, rotationMatrix, 0);
 
             // Combine the rotation matrix with the projection and camera view
             // Note that the vPMatrix factor *must be first* in order
@@ -94,7 +96,7 @@ public class GLActivity extends AppCompatActivity {
 
             // this projection matrix is applied to object coordinates
             // in the onDrawFrame() method
-            Matrix.frustumM(projectionMatrix, 0, -ratio, ratio, -1, 1, 2, 100);
+            Matrix.frustumM(projectionMatrix, 0, -ratio, ratio, -1, 1, 3, 100);
         }
 
         public static int loadShader(int type, String shaderCode){
@@ -132,20 +134,12 @@ public class GLActivity extends AppCompatActivity {
                     float dx = x - previousX;
                     float dy = y - previousY;
 
-                    // reverse direction of rotation above the mid-line
-                    if (y > getHeight() / 2) {
-                        dx = dx * -1 ;
-                    }
-
-                    // reverse direction of rotation to left of the mid-line
-                    if (x < getWidth() / 2) {
-                        dy = dy * -1 ;
-                    }
-
-                    renderer.setAngle(
-                            renderer.getAngle() +
-                                    ((dx + dy) * TOUCH_SCALE_FACTOR));
-                    renderer.setSkew(new float[] {dy / (dx + dy), dx / (dx + dy), 0.0f});
+                    renderer.setAngleX(
+                            renderer.getAngleX() +
+                                    (dx * TOUCH_SCALE_FACTOR));
+                    renderer.setAngleY(
+                            renderer.getAngleY() +
+                                    (dy * TOUCH_SCALE_FACTOR));
                     requestRender();
             }
 
