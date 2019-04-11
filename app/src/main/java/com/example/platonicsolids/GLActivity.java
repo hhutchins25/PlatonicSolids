@@ -15,6 +15,7 @@ import android.view.MotionEvent;
 
 import com.example.platonicsolids.geo.Cube;
 import com.example.platonicsolids.geo.Tetrahedron;
+import com.example.platonicsolids.geo.Octahedron;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -33,7 +34,7 @@ public class GLActivity extends AppCompatActivity {
         private final float[] viewMatrix = new float[16];
 
         private float[] rotationMatrix = new float[16];
-        private Tetrahedron mTetrahedron;
+        private Octahedron mOctahedron;
 
         public volatile float mAngleX; public volatile float mAngleY;
 
@@ -54,7 +55,7 @@ public class GLActivity extends AppCompatActivity {
             // Set the background frame color
             GLES20.glClearColor(r, g, b, 1.0f);
             // initialize a tetrahedron
-            mTetrahedron = new Tetrahedron();
+            mOctahedron = new Octahedron();
             // Enable depth test
             GLES20.glEnable(GLES20.GL_DEPTH_TEST);
             // Accept fragment if it closer to the camera than the former one
@@ -66,7 +67,7 @@ public class GLActivity extends AppCompatActivity {
             GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
 
             // Set the camera position (View matrix)
-            Matrix.setLookAtM(viewMatrix, 0, 0, 0, -10, 0f, 0f, 0f, 0f, 1.0f, 0.0f);
+            Matrix.setLookAtM(viewMatrix, 0, 0, 0, -6, 0f, 0f, 0f, 0f, 1.0f, 0.0f);
 
             // Calculate the projection and view transformation
             Matrix.multiplyMM(vPMatrix, 0, projectionMatrix, 0, viewMatrix, 0);
@@ -77,8 +78,7 @@ public class GLActivity extends AppCompatActivity {
 
             // Create a rotation for the triangle
             Matrix.setRotateM(rotationMatrix, 0, mAngleY, 1, 0, 0);
-            Matrix.setRotateM(xRot, 0, mAngleX, 0, 1, 0);
-            Matrix.multiplyMM(rotationMatrix, 0, xRot, 0, rotationMatrix, 0);
+            Matrix.rotateM(rotationMatrix, 0, mAngleX, 0, 1, 0);
 
             // Combine the rotation matrix with the projection and camera view
             // Note that the vPMatrix factor *must be first* in order
@@ -86,7 +86,7 @@ public class GLActivity extends AppCompatActivity {
             Matrix.multiplyMM(scratch, 0, vPMatrix, 0, rotationMatrix, 0);
 
             // Draw triangle
-            mTetrahedron.draw(scratch);
+            mOctahedron.draw(scratch);
         }
 
         public void onSurfaceChanged(GL10 unused, int width, int height) {

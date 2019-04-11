@@ -2,15 +2,15 @@ package com.example.platonicsolids.geo;
 
 public class Cube {
 
-    private float vert1[] = new float[] { 1, 1, 1 };
-    private float vert2[] = new float[] { 1, 1, -1 };
-    private float vert3[] = new float[] { -1, 1, 1 };
-    private float vert4[] = new float[] { -1, 1, -1 };
+    private float vert1[] = new float[] { 0.5774f, 0.5774f, 0.5774f };
+    private float vert2[] = new float[] { 0.5774f, 0.5774f, -0.5774f };
+    private float vert3[] = new float[] { -0.5774f, 0.5774f, 0.5774f };
+    private float vert4[] = new float[] { -0.5774f, 0.5774f, -0.5774f };
 
-    private float vert5[] = new float[] { 1, -1, 1 };
-    private float vert6[] = new float[] { 1, -1, -1 };
-    private float vert7[] = new float[] { -1, -1, 1 };
-    private float vert8[] = new float[] { -1, -1, -1 };
+    private float vert5[] = new float[] { 0.5774f, -0.5774f, 0.5774f };
+    private float vert6[] = new float[] { 0.5774f, -0.5774f, -0.5774f };
+    private float vert7[] = new float[] { -0.5774f, -0.5774f, 0.5774f };
+    private float vert8[] = new float[] { -0.5774f, -0.5774f, -0.5774f };
 
     Triangle tri1 = new Triangle(vert1, vert2, vert4);
     Triangle tri2 = new Triangle(vert1, vert4, vert3);
