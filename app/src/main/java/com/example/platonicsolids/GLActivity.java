@@ -12,7 +12,9 @@ import android.opengl.Matrix;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MotionEvent;
+import android.widget.Toast;
 
+import com.example.platonicsolids.geo.PlatonicSolid;
 import com.example.platonicsolids.geo.Cube;
 import com.example.platonicsolids.geo.Tetrahedron;
 import com.example.platonicsolids.geo.Octahedron;
@@ -34,7 +36,10 @@ public class GLActivity extends AppCompatActivity {
         private final float[] viewMatrix = new float[16];
 
         private float[] rotationMatrix = new float[16];
-        private Octahedron mOctahedron;
+        private PlatonicSolid mShapes[] = new PlatonicSolid[3];
+        private PlatonicSolid mShape;
+        private int shapeFlag;
+
 
         public volatile float mAngleX; public volatile float mAngleY;
 
@@ -51,11 +56,21 @@ public class GLActivity extends AppCompatActivity {
             mAngleY = angle;
         }
 
+        public String getCurrShapeStr() {
+            return String.valueOf(mShapes[shapeFlag].getClass().getSimpleName());
+        }
+
+        public void switchShape() {
+            shapeFlag = shapeFlag < 2 ? shapeFlag + 1 : 0;
+        }
+
         public void onSurfaceCreated(GL10 unused, EGLConfig config) {
+            mShapes[0] = new Tetrahedron();
+            mShapes[1] = new Cube();
+            mShapes[2] = new Octahedron();
             // Set the background frame color
             GLES20.glClearColor(r, g, b, 1.0f);
-            // initialize a tetrahedron
-            mOctahedron = new Octahedron();
+            mShape = new Tetrahedron();
             // Enable depth test
             GLES20.glEnable(GLES20.GL_DEPTH_TEST);
             // Accept fragment if it closer to the camera than the former one
@@ -73,8 +88,6 @@ public class GLActivity extends AppCompatActivity {
             Matrix.multiplyMM(vPMatrix, 0, projectionMatrix, 0, viewMatrix, 0);
 
             float[] scratch = new float[16];
-            float[] xRot = new float[16];
-            float[] yRot = new float[16];
 
             // Create a rotation for the triangle
             Matrix.setRotateM(rotationMatrix, 0, mAngleY, 1, 0, 0);
@@ -85,8 +98,8 @@ public class GLActivity extends AppCompatActivity {
             // for the matrix multiplication product to be correct.
             Matrix.multiplyMM(scratch, 0, vPMatrix, 0, rotationMatrix, 0);
 
-            // Draw triangle
-            mOctahedron.draw(scratch);
+            // Draw shape
+            mShapes[shapeFlag].draw(scratch);
         }
 
         public void onSurfaceChanged(GL10 unused, int width, int height) {
@@ -119,6 +132,12 @@ public class GLActivity extends AppCompatActivity {
         private float previousX;
         private float previousY;
 
+        // For double-click events
+        private int clickCount = 0;
+        private long startTime;
+        private long duration;
+        private static final int CLICK_TIMEOUT = 300;
+
         @Override
         public boolean onTouchEvent(MotionEvent e) {
             // MotionEvent reports input details from the touch screen
@@ -129,6 +148,34 @@ public class GLActivity extends AppCompatActivity {
             float y = e.getY();
 
             switch (e.getAction()) {
+                // Detect double-tap events
+                case MotionEvent.ACTION_DOWN:
+                    // reset start time if this is the first click
+                    if (clickCount == 0) { startTime = System.currentTimeMillis(); }
+                    clickCount++;
+
+                    // Start timers for checking tap speed
+                    long time = System.currentTimeMillis() - startTime;
+                    duration = duration + time;
+
+                    // If it's the second, check if clicks timed out or not
+                    if(clickCount == 2) {
+                        if (duration <= CLICK_TIMEOUT) {
+                            renderer.switchShape();
+                            Toast.makeText(GLActivity.this,
+                                    String.valueOf(renderer.getCurrShapeStr()),
+                                    Toast.LENGTH_LONG).show();
+                            clickCount = 0;
+                        }
+                        // Keep current click active if timeout happened
+                        else {
+                            clickCount = 1;
+                        }
+                        startTime = System.currentTimeMillis();
+                        duration = 0;
+                    }
+                    break;
+                // Edit rotation with dragging motions
                 case MotionEvent.ACTION_MOVE:
 
                     float dx = x - previousX;
@@ -153,12 +200,10 @@ public class GLActivity extends AppCompatActivity {
 
             // Create an OpenGL ES 2.0 context
             setEGLContextClientVersion(2);
-
             renderer = new MyGLRenderer();
 
             // Set the Renderer for drawing on the GLSurfaceView
             setRenderer(renderer);
-
             // Render the view only when there is a change in the drawing data
             setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
         }
