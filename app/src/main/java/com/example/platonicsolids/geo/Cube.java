@@ -1,40 +1,43 @@
 package com.example.platonicsolids.geo;
 
-public class Cube {
+public class Cube extends PlatonicSolid {
 
-    private float vert1[] = new float[] { 0.5774f, 0.5774f, 0.5774f };
-    private float vert2[] = new float[] { 0.5774f, 0.5774f, -0.5774f };
-    private float vert3[] = new float[] { -0.5774f, 0.5774f, 0.5774f };
-    private float vert4[] = new float[] { -0.5774f, 0.5774f, -0.5774f };
+    private float verts[][] = {
+        { 0.5774f, 0.5774f, 0.5774f },
+        { 0.5774f, 0.5774f, -0.5774f },
+        { -0.5774f, 0.5774f, 0.5774f },
+        { -0.5774f, 0.5774f, -0.5774f },
+        { 0.5774f, -0.5774f, 0.5774f },
+        { 0.5774f, -0.5774f, -0.5774f },
+        { -0.5774f, -0.5774f, 0.5774f },
+        { -0.5774f, -0.5774f, -0.5774f }
+    };
+    
+    private Triangle tris[] = {
+        new Triangle(verts[0], verts[1], verts[3]),
+        new Triangle(verts[0], verts[3], verts[2]),
+        new Triangle(verts[4], verts[5], verts[7]),
+        new Triangle(verts[4], verts[7], verts[6]),
 
-    private float vert5[] = new float[] { 0.5774f, -0.5774f, 0.5774f };
-    private float vert6[] = new float[] { 0.5774f, -0.5774f, -0.5774f };
-    private float vert7[] = new float[] { -0.5774f, -0.5774f, 0.5774f };
-    private float vert8[] = new float[] { -0.5774f, -0.5774f, -0.5774f };
+        new Triangle(verts[0], verts[4], verts[6]),
+        new Triangle(verts[0], verts[6], verts[2]),
+        new Triangle(verts[1], verts[5], verts[4]),
+        new Triangle(verts[1], verts[4], verts[0]),
 
-    Triangle tri1 = new Triangle(vert1, vert2, vert4);
-    Triangle tri2 = new Triangle(vert1, vert4, vert3);
-    Triangle tri3 = new Triangle(vert5, vert6, vert8);
-    Triangle tri4 = new Triangle(vert5, vert8, vert7);
-
-    Triangle tri5 = new Triangle(vert1, vert5, vert7);
-    Triangle tri6 = new Triangle(vert1, vert7, vert3);
-    Triangle tri7 = new Triangle(vert2, vert6, vert5);
-    Triangle tri8 = new Triangle(vert2, vert5, vert1);
-
-    Triangle tri9 = new Triangle(vert3, vert7, vert8);
-    Triangle tri10 = new Triangle(vert3, vert8, vert4);
-    Triangle tri11 = new Triangle(vert4, vert8, vert6);
-    Triangle tri12 = new Triangle(vert4, vert6, vert2);
+        new Triangle(verts[2], verts[6], verts[7]),
+        new Triangle(verts[2], verts[7], verts[3]),
+        new Triangle(verts[3], verts[7], verts[5]),
+        new Triangle(verts[3], verts[5], verts[1])
+    };
 
     public Cube() {
 
     }
 
     public void draw(float[] mvpMatrix) {
-        tri1.draw(mvpMatrix); tri2.draw(mvpMatrix); tri3.draw(mvpMatrix); tri4.draw(mvpMatrix);
-        tri5.draw(mvpMatrix); tri6.draw(mvpMatrix); tri7.draw(mvpMatrix); tri8.draw(mvpMatrix);
-        tri9.draw(mvpMatrix); tri10.draw(mvpMatrix); tri11.draw(mvpMatrix); tri12.draw(mvpMatrix);
+        for (int i=0; i<12; i++) {
+            tris[i].draw(mvpMatrix);
+        }
     }
 
 }

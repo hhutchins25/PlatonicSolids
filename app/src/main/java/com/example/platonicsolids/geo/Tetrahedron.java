@@ -5,27 +5,29 @@
 
 package com.example.platonicsolids.geo;
 
-public class Tetrahedron {
+public class Tetrahedron extends PlatonicSolid {
 
-    private float vert1[] = new float[] { 0.5774f, 0.5774f, 0.5774f };
-    private float vert2[] = new float[] { 0.5774f, -0.5774f, -0.5774f };
-    private float vert3[] = new float[] { -0.5774f, 0.5774f, -0.5774f };
-    private float vert4[] = new float[] { -0.5774f, -0.5774f, 0.5774f };
-
-    Triangle tri1 = new Triangle(vert1, vert3, vert2);
-    Triangle tri2 = new Triangle(vert1, vert4, vert3);
-    Triangle tri3 = new Triangle(vert1, vert2, vert4);
-    Triangle tri4 = new Triangle(vert4, vert2, vert3);
+    private float verts[][] = {
+            {0.5774f, 0.5774f, 0.5774f},
+            {0.5774f, -0.5774f, -0.5774f},
+            {-0.5774f, 0.5774f, -0.5774f},
+            {-0.5774f, -0.5774f, 0.5774f},
+    };
+    
+    private Triangle tris[] = {
+            new Triangle(verts[0], verts[2], verts[1]),
+            new Triangle(verts[0], verts[3], verts[2]),
+            new Triangle(verts[0], verts[1], verts[3]),
+            new Triangle(verts[3], verts[1], verts[2])
+    };
 
     public Tetrahedron() {
 
     }
 
     public void draw(float[] mvpMatrix) {
-        tri1.draw(mvpMatrix);
-        tri2.draw(mvpMatrix);
-        tri3.draw(mvpMatrix);
-        tri4.draw(mvpMatrix);
+        for (int i=0; i<4; i++) {
+            tris[i].draw(mvpMatrix);
+        }
     }
-
 }

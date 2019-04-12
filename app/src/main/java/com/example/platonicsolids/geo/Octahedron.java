@@ -1,6 +1,6 @@
 package com.example.platonicsolids.geo;
 
-public class Octahedron {
+public class Octahedron extends PlatonicSolid {
     private float verts[][] = {
         {1, 0, 0},
         {-1, 0, 0},
@@ -28,5 +28,4 @@ public class Octahedron {
             tris[i].draw(mvpMatrix);
         }
     }
-
 }
