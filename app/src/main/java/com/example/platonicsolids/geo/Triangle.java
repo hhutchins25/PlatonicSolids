@@ -41,6 +41,14 @@ public class Triangle {
     private final int vertexCount = 3;
     private final int vertexStride = COORDS_PER_VERTEX * 4; // 4 bytes per vertex
 
+    // number of coordinates per vertex in this array
+    static final int COORDS_PER_VERTEX = 3;
+
+    // Set color with red, green, blue and alpha (opacity) values
+    public float color[] = { (float)Math.random(), (float)Math.random(), (float)Math.random(), 1.0f };
+
+    private final int mProgram;
+
     public void draw(float[] mvpMatrix) {
         // Add program to OpenGL ES environment
         GLES20.glUseProgram(mProgram);
@@ -66,13 +74,9 @@ public class Triangle {
         GLES20.glDisableVertexAttribArray(positionHandle);
     }
 
-    // number of coordinates per vertex in this array
-    static final int COORDS_PER_VERTEX = 3;
-
-    // Set color with red, green, blue and alpha (opacity) values
-    float color[] = { (float)Math.random(), (float)Math.random(), (float)Math.random(), 1.0f };
-
-    private final int mProgram;
+    public void setColor(float[] tempColor){
+        color = tempColor;
+    }
 
     public Triangle(float point1[], float point2[], float point3[]) {
         float triangleCoords[] = { 
