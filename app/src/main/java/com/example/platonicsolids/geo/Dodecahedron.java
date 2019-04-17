@@ -4,6 +4,10 @@ import java.lang.Math;
 
 public class Dodecahedron extends PlatonicSolid {
 
+    // u - base unit, normalized for unit length
+    // g - golden ratio, normalized
+    // v - inverse of the golden ratio, normalized
+    // n prefix - negative
     private float u = (float)Math.pow(1.0/3.0, 0.5);
     private float nu = -1.0f * u;
     private float g = ((1.0f + (float)Math.sqrt(5)) / 2.0f) * u;
