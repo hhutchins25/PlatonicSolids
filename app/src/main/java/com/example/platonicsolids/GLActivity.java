@@ -18,6 +18,7 @@ import com.example.platonicsolids.geo.PlatonicSolid;
 import com.example.platonicsolids.geo.Cube;
 import com.example.platonicsolids.geo.Tetrahedron;
 import com.example.platonicsolids.geo.Octahedron;
+import com.example.platonicsolids.geo.Dodecahedron;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -36,7 +37,7 @@ public class GLActivity extends AppCompatActivity {
         private final float[] viewMatrix = new float[16];
 
         private float[] rotationMatrix = new float[16];
-        private PlatonicSolid mShapes[] = new PlatonicSolid[3];
+        private PlatonicSolid mShapes[] = new PlatonicSolid[4];
         private PlatonicSolid mShape;
         private int shapeFlag;
 
@@ -61,13 +62,14 @@ public class GLActivity extends AppCompatActivity {
         }
 
         public void switchShape() {
-            shapeFlag = shapeFlag < 2 ? shapeFlag + 1 : 0;
+            shapeFlag = shapeFlag < 3 ? shapeFlag + 1 : 0;
         }
 
         public void onSurfaceCreated(GL10 unused, EGLConfig config) {
             mShapes[0] = new Tetrahedron();
             mShapes[1] = new Cube();
             mShapes[2] = new Octahedron();
+            mShapes[3] = new Dodecahedron();
             // Set the background frame color
             GLES20.glClearColor(r, g, b, 1.0f);
             mShape = new Tetrahedron();
