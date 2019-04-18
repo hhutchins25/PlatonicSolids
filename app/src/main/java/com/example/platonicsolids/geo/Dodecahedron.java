@@ -4,6 +4,16 @@ import java.lang.Math;
 
 public class Dodecahedron extends PlatonicSolid {
 
+    public Dodecahedron() {
+
+    }
+
+    public void draw(float[] mvpMatrix) {
+        for(int i=0; i<12; i++) {
+            pents[i].draw(mvpMatrix);
+        }
+    }
+
     // u - base unit, normalized for unit length
     // g - golden ratio, normalized
     // v - inverse of the golden ratio, normalized
@@ -15,7 +25,7 @@ public class Dodecahedron extends PlatonicSolid {
     private float v = (float)(1.0f / ((1.0f + Math.sqrt(5)) / 2.0f)) * u;
     private float nv = -1.0f * v;
 
-    private float verts[][] = {
+    private float[][] verts = {
             // inner cube
             {u,u,u}, {u,u,nu}, {u,nu,u}, {u,nu,nu},
             {nu,u,u}, {nu,u,nu}, {nu,nu,u}, {nu,nu,nu},
@@ -27,7 +37,7 @@ public class Dodecahedron extends PlatonicSolid {
             {g,v,0}, {g,nv,0}, {ng,v,0}, {ng,nv,0}
     };
 
-    private NGon pents[] = {
+    private NGon[] pents = {
             new NGon(new float[][] {verts[0],verts[16],verts[1],verts[9], verts[8]}),
             new NGon(new float[][] {verts[9],verts[1],verts[13],verts[15],verts[5]}),
             new NGon(new float[][] {verts[0],verts[12],verts[2],verts[17],verts[16]}),
@@ -43,14 +53,4 @@ public class Dodecahedron extends PlatonicSolid {
             new NGon(new float[][] {verts[5],verts[18],verts[4],verts[8],verts[9]})
 
     };
-
-    public Dodecahedron() {
-
-    }
-
-    public void draw(float[] mvpMatrix) {
-        for(int i=0; i<12; i++) {
-            pents[i].draw(mvpMatrix);
-        }
-    }
 }

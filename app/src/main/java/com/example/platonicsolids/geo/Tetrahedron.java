@@ -7,20 +7,6 @@ package com.example.platonicsolids.geo;
 
 public class Tetrahedron extends PlatonicSolid {
 
-    private float verts[][] = {
-            {0.5774f, 0.5774f, 0.5774f},
-            {0.5774f, -0.5774f, -0.5774f},
-            {-0.5774f, 0.5774f, -0.5774f},
-            {-0.5774f, -0.5774f, 0.5774f},
-    };
-    
-    private Triangle tris[] = {
-            new Triangle(verts[0], verts[2], verts[1]),
-            new Triangle(verts[0], verts[3], verts[2]),
-            new Triangle(verts[0], verts[1], verts[3]),
-            new Triangle(verts[3], verts[1], verts[2])
-    };
-
     public Tetrahedron() {
 
     }
@@ -30,4 +16,19 @@ public class Tetrahedron extends PlatonicSolid {
             tris[i].draw(mvpMatrix);
         }
     }
+
+    private float verts[][] = {
+            {0.5774f, 0.5774f, 0.5774f},
+            {0.5774f, -0.5774f, -0.5774f},
+            {-0.5774f, 0.5774f, -0.5774f},
+            {-0.5774f, -0.5774f, 0.5774f},
+    };
+
+    private Triangle tris[] = {
+            new Triangle(verts[0], verts[2], verts[1]),
+            new Triangle(verts[0], verts[3], verts[2]),
+            new Triangle(verts[0], verts[1], verts[3]),
+            new Triangle(verts[3], verts[1], verts[2])
+    };
+
 }
