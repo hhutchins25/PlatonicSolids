@@ -1,5 +1,5 @@
 // GLActivity.java
-// Primarily based off Android example
+// Basics of OpenGL renderer based off Android example
 // https://developer.android.com/training/graphics/opengl/
 // Built upon by Holden Hutchins, 2019
 
@@ -28,43 +28,6 @@ public class GLActivity extends AppCompatActivity {
 
     public static class MyGLRenderer implements GLSurfaceView.Renderer {
 
-        private float r = 0.0f;
-        private float g = 0.0f;
-        private float b = 0.0f;
-
-        // vPMatrix is an abbreviation for "Model View Projection Matrix"
-        private final float[] vPMatrix = new float[16];
-        private final float[] projectionMatrix = new float[16];
-        private final float[] viewMatrix = new float[16];
-
-        private float[] rotationMatrix = new float[16];
-        private PlatonicSolid[] mShapes = new PlatonicSolid[5];
-        private int shapeFlag;
-
-
-        public volatile float mAngleX; public volatile float mAngleY;
-
-        public float getAngleX() {
-            return mAngleX;
-        }
-        public void setAngleX(float angle) {
-            mAngleX = angle;
-        }
-        public float getAngleY() {
-            return mAngleY;
-        }
-        public void setAngleY(float angle) {
-            mAngleY = angle;
-        }
-
-        public String getCurrShapeStr() {
-            return String.valueOf(mShapes[shapeFlag].getClass().getSimpleName());
-        }
-
-        public void switchShape() {
-            shapeFlag = shapeFlag < 4 ? shapeFlag + 1 : 0;
-        }
-
         public void onSurfaceCreated(GL10 unused, EGLConfig config) {
             mShapes[0] = new Tetrahedron();
             mShapes[1] = new Cube();
@@ -80,6 +43,10 @@ public class GLActivity extends AppCompatActivity {
         }
 
         public void onDrawFrame(GL10 unused) {
+
+            // Drift rotation once press action is released
+            if (getDrift() == 1) { drift(); }
+
             // Redraw background color
             GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
 
@@ -88,7 +55,6 @@ public class GLActivity extends AppCompatActivity {
 
             // Calculate the projection and view transformation
             Matrix.multiplyMM(vPMatrix, 0, projectionMatrix, 0, viewMatrix, 0);
-
             float[] scratch = new float[16];
 
             // Create a rotation for the triangle
@@ -124,21 +90,69 @@ public class GLActivity extends AppCompatActivity {
 
             return shader;
         }
+
+        // recursive function for handling transition
+        private void drift() {
+            setAngleX(
+                    getAngleX() +
+                            (mDX * TOUCH_SCALE_FACTOR));
+            setAngleY(
+                    getAngleY() +
+                            (mDY * TOUCH_SCALE_FACTOR));
+            if ((Math.abs(mDX) > 0.01) || (Math.abs(mDY) > 0.01)) {
+                setMDX(getMDX()*0.9f);
+                setMDY(getMDY()*0.9f);
+            } else { setDrift(0); }
+        }
+
+
+        public volatile float mAngleX; public volatile float mAngleY;
+
+        // All get/sets for the GL renderer
+        public float getAngleX() { return mAngleX; }
+        public void setAngleX(float angle) { mAngleX = angle; }
+        public float getAngleY() { return mAngleY; }
+        public void setAngleY(float angle) { mAngleY = angle; }
+        public float getMDX() {return mDX;}
+        public void setMDX(float dx) {mDX = dx;}
+        public float getMDY() {return mDY;}
+        public void setMDY(float dy) {mDY = dy;}
+        public int getDrift() {return driftFlag;}
+        public void setDrift(int flag) {driftFlag = flag;}
+
+        public String getCurrShapeStr() {
+            return String.valueOf(mShapes[shapeFlag].getClass().getSimpleName());
+        }
+
+        public void switchShape() {
+            shapeFlag = shapeFlag < 4 ? shapeFlag + 1 : 0;
+        }
+
+        // Controls the background color
+        private float r = 0.0f;
+        private float g = 0.0f;
+        private float b = 0.0f;
+
+        // vPMatrix is an abbreviation for "Model View Projection Matrix"
+        private final float[] vPMatrix = new float[16];
+        private final float[] projectionMatrix = new float[16];
+        private final float[] viewMatrix = new float[16];
+        private float[] rotationMatrix = new float[16];
+
+        // Used for switching between the platonic solids
+        private PlatonicSolid[] mShapes = new PlatonicSolid[5];
+        private int shapeFlag;
+
+        // For drift calculations
+        private int driftFlag;
+        private float mDX;
+        private float mDY;
+
+        // Universal scale factor for rotating
+        private final float TOUCH_SCALE_FACTOR = 180.0f / 320;
     }
 
     class MyGLSurfaceView extends GLSurfaceView {
-
-        private final MyGLRenderer renderer;
-
-        private final float TOUCH_SCALE_FACTOR = 180.0f / 320;
-        private float previousX;
-        private float previousY;
-
-        // For double-click events
-        private int clickCount = 0;
-        private long startTime;
-        private long duration;
-        private static final int CLICK_TIMEOUT = 300;
 
         @Override
         public boolean onTouchEvent(MotionEvent e) {
@@ -180,16 +194,27 @@ public class GLActivity extends AppCompatActivity {
                 // Edit rotation with dragging motions
                 case MotionEvent.ACTION_MOVE:
 
-                    float dx = x - previousX;
-                    float dy = y - previousY;
+                    dx = x - previousX;
+                    dy = y - previousY;
 
                     renderer.setAngleX(
                             renderer.getAngleX() +
-                                    (dx * TOUCH_SCALE_FACTOR));
+                                    (dx * renderer.TOUCH_SCALE_FACTOR));
                     renderer.setAngleY(
                             renderer.getAngleY() +
-                                    (dy * TOUCH_SCALE_FACTOR));
+                                    (dy * renderer.TOUCH_SCALE_FACTOR));
                     requestRender();
+                    break;
+
+                // Continue spinning once finger lifted
+                case MotionEvent.ACTION_UP:
+                    if (clickCount > 0) {
+                        renderer.setDrift(1);
+                        renderer.setMDX(dx);
+                        renderer.setMDY(dy);
+                    }
+                    break;
+
             }
 
             previousX = x;
@@ -207,11 +232,22 @@ public class GLActivity extends AppCompatActivity {
             // Set the Renderer for drawing on the GLSurfaceView
             setRenderer(renderer);
             // Render the view only when there is a change in the drawing data
-            setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
+            //setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
         }
-    }
 
-    private GLSurfaceView gLView;
+        private final MyGLRenderer renderer;
+
+        private float previousX;
+        private float previousY;
+        private float dx;
+        private float dy;
+
+        // For double-click events
+        private int clickCount = 0;
+        private long startTime;
+        private long duration;
+        private static final int CLICK_TIMEOUT = 300;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -222,4 +258,6 @@ public class GLActivity extends AppCompatActivity {
         gLView = new MyGLSurfaceView(this);
         setContentView(gLView);
     }
+
+    private GLSurfaceView gLView;
 }
