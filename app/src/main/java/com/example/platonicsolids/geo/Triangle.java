@@ -8,6 +8,8 @@ package com.example.platonicsolids.geo;
 import android.opengl.GLES20;
 
 import com.example.platonicsolids.GLActivity.MyGLRenderer;
+import com.example.platonicsolids.math.Vector;
+
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
@@ -20,6 +22,7 @@ public class Triangle {
                 point2[0], point2[1], point2[2],
                 point3[0], point3[1], point3[2]
         };
+        setNormal(point1, point2, point3);
         // initialize vertex byte buffer for shape coordinates
         ByteBuffer bb = ByteBuffer.allocateDirect(
                 // (number of coordinate values * 4 bytes per float)
@@ -53,9 +56,9 @@ public class Triangle {
     }
 
     // Set color with red, green, blue and alpha (opacity) values
-    public float color[] = { (float)Math.random(), (float)Math.random(), (float)Math.random(), 1.0f };
+    public float color[] = { 0.1f, 0.5f, 0.9f,  1.0f };
 
-    public void draw(float[] mvpMatrix) {
+    public void draw(float[] mvpMatrix, float[] rotationMatrix) {
         // Add program to OpenGL ES environment
         GLES20.glUseProgram(mProgram);
         // get handle to vertex shader's vPosition member
@@ -68,8 +71,12 @@ public class Triangle {
                 vertexStride, vertexBuffer);
         // get handle to fragment shader's vColor member
         colorHandle = GLES20.glGetUniformLocation(mProgram, "vColor");
+        normalHandle = GLES20.glGetUniformLocation(mProgram, "vNormal");
+        objectHandle = GLES20.glGetUniformLocation(mProgram, "object");
         // Set color for drawing the triangle
         GLES20.glUniform4fv(colorHandle, 1, color, 0);
+        GLES20.glUniform3fv(normalHandle, 1, normal, 0);
+        GLES20.glUniformMatrix4fv(objectHandle, 1, false, rotationMatrix, 0);
         // get handle to shape's transformation matrix
         vPMatrixHandle = GLES20.glGetUniformLocation(mProgram, "uMVPMatrix");
         // Pass the projection and view transformation to the shader
@@ -82,6 +89,13 @@ public class Triangle {
 
     public void setColor(float[] tempColor){
         color = tempColor;
+    }
+
+    private void setNormal(float[] point1, float[] point2, float[] point3) {
+        float[] vec1 = Vector.diff(point2, point1);
+        float[] vec2 = Vector.diff(point3, point1);
+        float[] temp = Vector.cross(vec1, vec2);
+        normal = Vector.normalize(temp);
     }
 
     private final String vertexShaderCode =
@@ -101,12 +115,22 @@ public class Triangle {
     private final String fragmentShaderCode =
             "precision mediump float;" +
                     "uniform vec4 vColor;" +
+                    "uniform vec3 vNormal;" +
+                    "uniform mat4 object;" +
                     "void main() {" +
-                    "  gl_FragColor = vColor;" +
+                    "  vec4 currNorm; currNorm.xyz = vNormal; currNorm.w = 1.0;" +
+                    "  vec4 rotNorm = object * currNorm; vec3 norm = rotNorm.xyz / rotNorm.w;" +
+                    "  vec3 lightDir = vec3(0.0, 0.0, -1.0);" +
+                    "  float diff = max(dot(norm, lightDir),0.0);" +
+                    "  vec4 diffuse = (diff + 0.1) * vColor;" +
+                    "  gl_FragColor = diffuse;" +
                     "}";
     private FloatBuffer vertexBuffer;
     private int positionHandle;
     private int colorHandle;
+    private int normalHandle;
+    private int objectHandle;
+    private float[] normal;
     private final int vertexCount = 3;
     private final int vertexStride = COORDS_PER_VERTEX * 4; // 4 bytes per vertex
 

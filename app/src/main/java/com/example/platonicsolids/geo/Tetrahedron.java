@@ -11,9 +11,9 @@ public class Tetrahedron extends PlatonicSolid {
 
     }
 
-    public void draw(float[] mvpMatrix) {
+    public void draw(float[] mvpMatrix, float[] rotationMatrix) {
         for (int i=0; i<4; i++) {
-            tris[i].draw(mvpMatrix);
+            tris[i].draw(mvpMatrix, rotationMatrix);
         }
     }
 
@@ -25,10 +25,10 @@ public class Tetrahedron extends PlatonicSolid {
     };
 
     private Triangle tris[] = {
-            new Triangle(verts[0], verts[2], verts[1]),
-            new Triangle(verts[0], verts[3], verts[2]),
-            new Triangle(verts[0], verts[1], verts[3]),
-            new Triangle(verts[3], verts[1], verts[2])
+            new Triangle(verts[0], verts[1], verts[2]),
+            new Triangle(verts[0], verts[2], verts[3]),
+            new Triangle(verts[0], verts[3], verts[1]),
+            new Triangle(verts[3], verts[2], verts[1])
     };
 
 }

@@ -7,14 +7,10 @@ public class NGon {
         setCenter(verts);
         tris = new Triangle[len];
 
-        float color[] = { (float)Math.random(), (float)Math.random(),
-                (float)Math.random(), 1.0f };
         for (int i = 0; i < len - 1; i++) {
-            tris[i] = new Triangle(verts[i], center, verts[i + 1]);
-            tris[i].setColor(color);
+            tris[i] = new Triangle(verts[i], verts[i+1], center);
         }
-        tris[len - 1] = new Triangle(verts[len - 1], center, verts[0]);
-        tris[len - 1].setColor(color);
+        tris[len - 1] = new Triangle(verts[len - 1], verts[0], center);
     }
 
     public void setCenter(float[][] verts) {
@@ -25,9 +21,9 @@ public class NGon {
         center = new float[] { xSum / len, ySum / len, zSum / len };
     }
 
-    public void draw(float[] mvpMatrix) {
+    public void draw(float[] mvpMatrix, float[] rotationMatrix) {
         for(int i = 0; i < len; i++) {
-            tris[i].draw(mvpMatrix);
+            tris[i].draw(mvpMatrix, rotationMatrix);
         }
     }
 

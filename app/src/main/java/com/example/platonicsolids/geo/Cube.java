@@ -4,9 +4,9 @@ public class Cube extends PlatonicSolid {
 
     public Cube() { }
 
-    public void draw(float[] mvpMatrix) {
+    public void draw(float[] mvpMatrix, float[] rotationMatrix) {
         for (int i=0; i<6; i++) {
-            quads[i].draw(mvpMatrix);
+            quads[i].draw(mvpMatrix, rotationMatrix);
         }
     }
 

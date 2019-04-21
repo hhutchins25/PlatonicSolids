@@ -40,6 +40,7 @@ public class GLActivity extends AppCompatActivity {
             GLES20.glEnable(GLES20.GL_DEPTH_TEST);
             // Accept fragment if it closer to the camera than the former one
             GLES20.glDepthFunc(GLES20.GL_LESS);
+            GLES20.glCullFace(GLES20.GL_BACK);
         }
 
         public void onDrawFrame(GL10 unused) {
@@ -67,7 +68,7 @@ public class GLActivity extends AppCompatActivity {
             Matrix.multiplyMM(scratch, 0, vPMatrix, 0, rotationMatrix, 0);
 
             // Draw shape
-            mShapes[shapeFlag].draw(scratch);
+            mShapes[shapeFlag].draw(scratch, rotationMatrix);
         }
 
         public void onSurfaceChanged(GL10 unused, int width, int height) {

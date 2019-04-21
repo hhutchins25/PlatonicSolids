@@ -4,9 +4,9 @@ public class Icosahedron extends PlatonicSolid {
 
     public Icosahedron() { }
 
-    public void draw(float[] mvpMatrix) {
+    public void draw(float[] mvpMatrix, float[] rotationMatrix) {
         for(int i=0; i<20; i++) {
-            tris[i].draw(mvpMatrix);
+            tris[i].draw(mvpMatrix, rotationMatrix);
         }
     }
 
@@ -34,18 +34,18 @@ public class Icosahedron extends PlatonicSolid {
 
     private Triangle[] tris = {
             // all triangles surrounding corner vertex
-            new Triangle(verts[0],verts[3],verts[8]),
+            new Triangle(verts[0],verts[8],verts[3]),
             // every other triangle corresponds to the triangle
             // linked on the opposite side of the main vertex
-            new Triangle(verts[8],verts[3],verts[7]),
-            new Triangle(verts[0],verts[8],verts[4]),
-            new Triangle(verts[4],verts[8],verts[9]),
-            new Triangle(verts[0],verts[4],verts[5]),
-            new Triangle(verts[5],verts[4],verts[1]),
-            new Triangle(verts[0],verts[5],verts[11]),
-            new Triangle(verts[11],verts[5],verts[10]),
-            new Triangle(verts[0],verts[11],verts[3]),
-            new Triangle(verts[3],verts[11],verts[6]),
+            new Triangle(verts[8],verts[7],verts[3]),
+            new Triangle(verts[0],verts[4],verts[8]),
+            new Triangle(verts[4],verts[9],verts[8]),
+            new Triangle(verts[0],verts[5],verts[4]),
+            new Triangle(verts[5],verts[1],verts[4]),
+            new Triangle(verts[0],verts[11],verts[5]),
+            new Triangle(verts[11],verts[10],verts[5]),
+            new Triangle(verts[0],verts[3],verts[11]),
+            new Triangle(verts[3],verts[6],verts[11]),
 
             // all triangles surrounding vertex opposite of previous one
             new Triangle(verts[2],verts[9],verts[1]),

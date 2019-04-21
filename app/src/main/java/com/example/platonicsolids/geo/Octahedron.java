@@ -4,9 +4,9 @@ public class Octahedron extends PlatonicSolid {
 
     public Octahedron() { }
 
-    public void draw(float[] mvpMatrix) {
+    public void draw(float[] mvpMatrix, float[] rotationMatrix) {
         for (int i=0; i<8; i++) {
-            tris[i].draw(mvpMatrix);
+            tris[i].draw(mvpMatrix, rotationMatrix);
         }
     }
 

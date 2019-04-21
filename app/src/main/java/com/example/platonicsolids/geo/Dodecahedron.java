@@ -8,9 +8,9 @@ public class Dodecahedron extends PlatonicSolid {
 
     }
 
-    public void draw(float[] mvpMatrix) {
+    public void draw(float[] mvpMatrix, float[] rotationMatrix) {
         for(int i=0; i<12; i++) {
-            pents[i].draw(mvpMatrix);
+            pents[i].draw(mvpMatrix, rotationMatrix);
         }
     }
 
