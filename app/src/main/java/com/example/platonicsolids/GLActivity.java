@@ -12,6 +12,8 @@ import android.opengl.Matrix;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MotionEvent;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.example.platonicsolids.geo.Cube;
@@ -253,6 +255,7 @@ public class GLActivity extends AppCompatActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getSupportActionBar().hide();
 
         // Create a GLSurfaceView instance and set it
         // as the ContentView for this Activity.
